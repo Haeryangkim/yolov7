@@ -277,6 +277,7 @@ class LoadStreams:  # multiple IP or RTSP cameras
 
         n = len(sources)
         self.imgs = [None] * n
+        self.flags = [False] * n
         self.sources = [clean_str(x) for x in sources]  # clean source names for later
         for i, s in enumerate(sources):
             # Start the thread to read frames from the video stream
@@ -310,12 +311,11 @@ class LoadStreams:  # multiple IP or RTSP cameras
         while cap.isOpened():
             n += 1
             # _, self.imgs[index] = cap.read()
-            cap.grab()
-            if n == 4:  # read every 4th frame
-                success, im = cap.retrieve()
+            success, im = cap.read()
+            if n == 1:  # read every 4th frame
                 self.imgs[index] = im if success else self.imgs[index] * 0
                 n = 0
-            time.sleep(1 / self.fps)  # wait time
+            #time.sleep(1 / self.fps)  # wait time
 
     def __iter__(self):
         self.count = -1
